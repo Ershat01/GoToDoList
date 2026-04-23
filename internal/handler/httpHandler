@@ -1,0 +1,16 @@
+func (h *HTTPHandler) createTask(w http.ResponseWriter, r *http.Request) {
+	var req createTaskRequest
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	task, err := h.service.CreateTask(req.Title, req.Description)
+	if err != nil {
+		http.Error(w, "Failed to create task", http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(task)
+}
